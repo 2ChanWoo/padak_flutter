@@ -1,6 +1,8 @@
 import "package:flutter/material.dart";
 import 'grid_page.dart';
 import 'list_page.dart';
+import 'package:firebase_admob/firebase_admob.dart';
+import 'dart:io' show Platform;
 
 // 1-2. 탭 화면 (각 화면 import)
 
@@ -14,6 +16,29 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedTabIndex = 0;
+
+  static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+    keywords: <String>['flutter', 'firebase', 'admob'],
+    testDevices: <String>[],
+  );
+
+  BannerAd bannerAd = BannerAd(
+    adUnitId: BannerAd.testAdUnitId,
+    size: AdSize.banner,
+    targetingInfo: targetingInfo,
+    listener: (MobileAdEvent event) {
+      print("BannerAd event is $event");
+    },
+  );
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    FirebaseAdMob.instance.initialize(
+        appId: 'ca-app-pub-9993888033176045~5660132668'); // Android Test App ID
+    bannerAd..load()..show();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
